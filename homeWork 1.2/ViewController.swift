@@ -10,22 +10,24 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var redLightSection: UIView!
-   
     @IBOutlet weak var yelowLightSection: UIView!
-    
     @IBOutlet weak var greenLightSection: UIView!
-    
     @IBOutlet weak var startButton: UIButton!
     
+    var nextColorState: TrafficLights = .red
     
-    var redIsLight = false
-    var yellowIsLight = false
-    var greenIsLight = false
+    enum TrafficLights {
+        case red
+        case yellow
+        case green
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         startButton.setTitle("Start", for: .normal)
         startButton.titleLabel?.font = UIFont.systemFont(ofSize: 29.0)
+        startButton.layer.cornerRadius = 10
         roundAndDarkElement(element: redLightSection)
         roundAndDarkElement(element: yelowLightSection)
         roundAndDarkElement(element: greenLightSection)
@@ -34,35 +36,34 @@ class ViewController: UIViewController {
   
     @IBAction func startLightChange() {
         startButton.setTitle("Next", for: .normal)
-        if !redIsLight {
-            makeDarkThe(element: greenLightSection)
-            makeBrighterThe(element: redLightSection)
-            redIsLight = true
-            
+       
+        switch nextColorState {
+        case .red:
+            turn(offLight: greenLightSection, onLight: redLightSection)
+            nextColorState = .yellow
+        case .yellow:
+            turn(offLight: redLightSection, onLight: yelowLightSection)
+            nextColorState = .green
+        case .green:
+            turn(offLight: yelowLightSection, onLight: greenLightSection)
+            nextColorState = .red
         }
-        else if !yellowIsLight {
-            makeDarkThe(element: redLightSection)
-            makeBrighterThe(element: yelowLightSection)
-            yellowIsLight = true
-        } else {
-            makeDarkThe(element: yelowLightSection)
-            makeBrighterThe(element: greenLightSection)
-            redIsLight = false
-            yellowIsLight = false
-        }
-        
     }
     
+    func roundAndDarkElement(element: UIView) {
+        element.layer.cornerRadius = element.bounds.height / 2
+        element.alpha = 0.1
+    }
+    func makeBrighterThe(element: UIView) {
+        element.alpha = 0.9
+    }
+    func makeDarkThe(element: UIView) {
+        element.alpha = 0.1
+    }
+    
+    func turn(offLight: UIView, onLight: UIView ) {
+        offLight.alpha = 0.1
+        onLight.alpha = 0.9
+        
+    }
 }
-func roundAndDarkElement(element: UIView) {
-    element.layer.cornerRadius = element.bounds.height / 2
-    element.alpha = 0.1
-}
-func makeBrighterThe(element: UIView) {
-    element.alpha = 0.9
-}
-func makeDarkThe(element: UIView) {
-    element.alpha = 0.1
-}
-
-
